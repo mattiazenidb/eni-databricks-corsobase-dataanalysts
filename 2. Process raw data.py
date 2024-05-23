@@ -16,7 +16,9 @@ dbutils = DBUtils(spark)
 
 # COMMAND ----------
 
-current_user = json.loads(dbutils.notebook.entry_point.getDbutils().notebook().getContext().toJson())["tags"]["user"].split('@')[0]
+
+catalog = 'eni_databricks_corsobase_dataanalysts'
+schema = json.loads(dbutils.notebook.entry_point.getDbutils().notebook().getContext().safeToJson())["attributes"]["user"].split('@')[0].replace('.', '_')
 
 # COMMAND ----------
 
@@ -56,7 +58,7 @@ df_iot.display()
 
 # COMMAND ----------
 
-df_iot.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{current_user}_catalog.default.sensor_bronze')
+df_iot.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{catalog}.{schema}.sensor_bronze')
 
 # COMMAND ----------
 
@@ -104,7 +106,7 @@ df_json.printSchema()
 
 # COMMAND ----------
 
-df_json.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{current_user}_catalog.default.parts')
+df_json.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{catalog}.{schema}.parts')
 
 # COMMAND ----------
 
@@ -139,7 +141,7 @@ df_json.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{cur
 from pandas import read_excel
 
 my_sheet = 'Sheet1' # change it to your sheet name, you can find your sheet name at the bottom left of your excel file
-file_name = f'/Volumes/{current_user}_catalog/default/{current_user}_volume/file_example_XLS_5000.xls' # change it to the name of your excel file
+file_name = f'/Volumes/{catalog}.{schema}/raw/file_example_XLS_5000.xls' # change it to the name of your excel file
 df_pandas = read_excel(file_name, sheet_name = my_sheet)
 
 # COMMAND ----------

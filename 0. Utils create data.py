@@ -17,15 +17,27 @@
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC CREATE CATALOG IF NOT EXISTS eni_databricks_corsobase_dataanalysts
+from pyspark.sql import SparkSession
+from pyspark.dbutils import DBUtils
+import json
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC CREATE SCHEMA IF NOT EXISTS eni_databricks_corsobase_dataanalysts.course_schema
+spark = SparkSession.getActiveSession()
+dbutils = DBUtils(spark)
+
+# COMMAND ----------
+
+catalog = 'eni_databricks_corsobase_dataanalysts'
+schema = json.loads(dbutils.notebook.entry_point.getDbutils().notebook().getContext().safeToJson())["attributes"]["user"].split('@')[0].replace('.', '_')
+
+# COMMAND ----------
+
+spark.sql(f'CREATE CATALOG IF NOT EXISTS {catalog}')
+
+# COMMAND ----------
+
+spark.sql(f'CREATE SCHEMA IF NOT EXISTS {catalog}.{schema}')
 
 # COMMAND ----------
 
