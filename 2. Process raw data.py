@@ -16,7 +16,6 @@ dbutils = DBUtils(spark)
 
 # COMMAND ----------
 
-
 catalog = 'eni_databricks_corsobase_dataanalysts'
 schema = json.loads(dbutils.notebook.entry_point.getDbutils().notebook().getContext().safeToJson())["attributes"]["user"].split('@')[0].replace('.', '_')
 
@@ -58,7 +57,7 @@ df_iot.display()
 
 # COMMAND ----------
 
-df_iot.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{catalog}.{schema}.sensor_bronze')
+df_iot.write.mode('overwrite').option("overwriteSchema", "true").saveAsTable(f'{catalog}.{schema}.sensor_bronze')
 
 # COMMAND ----------
 
