@@ -34,6 +34,7 @@ df_sensor_bronze.printSchema()
 # COMMAND ----------
 
 import pyspark.sql.functions as F
+from pyspark.sql.types import TimestampType
 
 df_sensor_bronze = df_sensor_bronze.withColumn("timestamp", F.col("timestamp").cast("bigint"))\
                     .withColumn("sensor_a", F.col("sensor_a").cast("double"))\
@@ -42,7 +43,8 @@ df_sensor_bronze = df_sensor_bronze.withColumn("timestamp", F.col("timestamp").c
                     .withColumn("sensor_d", F.col("sensor_d").cast("double"))\
                     .withColumn("sensor_e", F.col("sensor_e").cast("double"))\
                     .withColumn("sensor_f", F.col("sensor_f").cast("double"))\
-                    .withColumn("energy", F.col("energy").cast("double"))
+                    .withColumn("energy", F.col("energy").cast("double"))\
+                    .withColumn("timestamp", F.to_timestamp(F.col('timestamp').cast(TimestampType())))
 
 # COMMAND ----------
 
@@ -50,7 +52,11 @@ df_sensor_bronze.printSchema()
 
 # COMMAND ----------
 
-df_sensor_bronze.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{catalog}.{schema}.sensor_bronze_intermediate')
+df_sensor_bronze.display()
+
+# COMMAND ----------
+
+df_sensor_bronze.write.mode('overwrite').option("overwriteSchema", "true").saveAsTable(f'{catalog}.{schema}.sensor_bronze_intermediate')
 
 # COMMAND ----------
 
@@ -77,7 +83,7 @@ for sensor in sensors:
   aggregations.append(F.percentile_approx(sensor, [0.1, 0.3, 0.6, 0.8, 0.95]).alias("percentiles_"+sensor))
   
 df_sensor_hourly = (df_sensor_bronze_intermediate
-          .withColumn("hourly_timestamp", F.date_trunc("hour", F.from_unixtime("timestamp")))
+          .withColumn("hourly_timestamp", F.date_trunc("hour", "timestamp"))
           .groupBy('hourly_timestamp', 'turbine_id').agg(*aggregations))
 
 # COMMAND ----------
@@ -86,7 +92,7 @@ display(df_sensor_hourly)
 
 # COMMAND ----------
 
-df_sensor_hourly.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{catalog}.{schema}.sensor_hourly')
+df_sensor_hourly.write.mode('overwrite').option("overwriteSchema", "true").saveAsTable(f'{catalog}.{schema}.sensor_hourly')
 
 # COMMAND ----------
 
@@ -113,4 +119,4 @@ display(df_turbine_training_dataset)
 
 # COMMAND ----------
 
-df_turbine_training_dataset.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{catalog}.{schema}.turbine_training_dataset')
+df_turbine_training_dataset.write.mode('overwrite').option("overwriteSchema", "true").saveAsTable(f'{catalog}.{schema}.turbine_training_dataset')

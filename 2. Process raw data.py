@@ -5,6 +5,13 @@
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC Autloader viene gia' utilizzato in alcuni data product per l'ingestion dei dati dalla sorgente
+# MAGIC - BOS
+# MAGIC - CDP
+
+# COMMAND ----------
+
 from pyspark.sql import SparkSession
 from pyspark.dbutils import DBUtils
 import json

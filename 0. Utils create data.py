@@ -28,6 +28,12 @@ dbutils = DBUtils(spark)
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC
+# MAGIC Catalogo sara' fornito dai team di data engineer
+
+# COMMAND ----------
+
 schema = json.loads(dbutils.notebook.entry_point.getDbutils().notebook().getContext().safeToJson())["attributes"]["user"].split('@')[0].replace('.', '_')
 
 # COMMAND ----------
