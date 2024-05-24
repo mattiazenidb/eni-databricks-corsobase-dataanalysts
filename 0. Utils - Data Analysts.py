@@ -1,19 +1,12 @@
 # Databricks notebook source
-# MAGIC %sql
+# MAGIC %md
 # MAGIC
-# MAGIC CREATE CATALOG IF NOT EXISTS landing
+# MAGIC ### Note
+# MAGIC Il catalogo ```catalog``` sara' fornito dai team di data engineer
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC
-# MAGIC CREATE SCHEMA IF NOT EXISTS landing.power
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC
-# MAGIC CREATE VOLUME IF NOT EXISTS landing.power.turbine_raw_landing
+catalog = 'eni_databricks_corsobase_dataanalysts'
 
 # COMMAND ----------
 
@@ -28,17 +21,7 @@ dbutils = DBUtils(spark)
 
 # COMMAND ----------
 
-# MAGIC %md
-# MAGIC
-# MAGIC Catalogo sara' fornito dai team di data engineer
-
-# COMMAND ----------
-
 schema = json.loads(dbutils.notebook.entry_point.getDbutils().notebook().getContext().safeToJson())["attributes"]["user"].split('@')[0].replace('.', '_')
-
-# COMMAND ----------
-
-spark.sql(f'CREATE CATALOG IF NOT EXISTS {catalog}')
 
 # COMMAND ----------
 
