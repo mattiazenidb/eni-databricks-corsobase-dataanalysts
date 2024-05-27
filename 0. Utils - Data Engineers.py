@@ -36,6 +36,7 @@ catalog = 'eni_databricks_corsobase_dataanalysts'
 
 spark.sql(f'CREATE CATALOG IF NOT EXISTS {catalog}')
 spark.sql(f'GRANT USE CATALOG ON CATALOG {catalog} TO `account users`')
+spark.sql(f'GRANT CREATE SCHEMA ON CATALOG {catalog} TO `account users`')
 
 # COMMAND ----------
 
