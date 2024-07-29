@@ -5,7 +5,7 @@ catalog = 'eni_databricks_corsobase_dataanalysts'
 
 # MAGIC %sql
 # MAGIC
-# MAGIC CREATE CATALOG IF NOT EXISTS landing
+# MAGIC CREATE CATALOG IF NOT EXISTS landing MANAGED LOCATION 'abfss://external@mzeninccserverlessgc3.dfs.core.windows.net/corsobaseeni/landing'
 
 # COMMAND ----------
 
@@ -34,7 +34,7 @@ catalog = 'eni_databricks_corsobase_dataanalysts'
 
 # COMMAND ----------
 
-spark.sql(f'CREATE CATALOG IF NOT EXISTS {catalog}')
+spark.sql(f"CREATE CATALOG IF NOT EXISTS {catalog} MANAGED LOCATION 'abfss://external@mzeninccserverlessgc3.dfs.core.windows.net/corsobaseeni/{catalog}'")
 spark.sql(f'GRANT USE CATALOG ON CATALOG {catalog} TO `account users`')
 spark.sql(f'GRANT CREATE SCHEMA ON CATALOG {catalog} TO `account users`')
 

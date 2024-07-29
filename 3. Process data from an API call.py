@@ -1,6 +1,14 @@
 # Databricks notebook source
+# MAGIC %sql
+# MAGIC
+# MAGIC SELECT * FROM eni_databricks_corsobase_dataanalysts.mattia_zeni.historical_turbine_status
+# MAGIC
+
+# COMMAND ----------
+
 from pyspark.sql import SparkSession
 from pyspark.dbutils import DBUtils
+from pyspark.sql import functions as F
 import json
 
 # COMMAND ----------
@@ -66,15 +74,31 @@ df_turbine_intermediate.printSchema()
 
 # COMMAND ----------
 
+df_turbine_intermediate.display()
+
+# COMMAND ----------
+
 from pyspark.sql.functions import col
 
-df_turbine_intermediate = df_turbine_intermediate.withColumn("lat", col("lat").cast("double"))\
+df_turbine_intermediate_correct = df_turbine_intermediate.filter(F.col('lat') != 'ERROR').filter(F.col('long') != 'ERROR').withColumn("lat", col("lat").cast("double"))\
                           .withColumn("long", col("long").cast("double"))
 
 # COMMAND ----------
 
-df_turbine_intermediate.printSchema()
+df_turbine_intermediate_correct.printSchema()
 
 # COMMAND ----------
 
-df_turbine_intermediate.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{catalog}.{schema}.turbine')
+df_turbine_intermediate_correct.display()
+
+# COMMAND ----------
+
+df_turbine_intermediate_correct.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{catalog}.{schema}.turbine')
+
+# COMMAND ----------
+
+df_turbine_intermediate_error = df_turbine_intermediate.filter(F.col('lat') == 'ERROR').filter(F.col('long') == 'ERROR')
+
+# COMMAND ----------
+
+df_turbine_intermediate_correct.display()

@@ -147,7 +147,7 @@ df_json.write.mode('overwrite').option("mergeSchema", "true").saveAsTable(f'{cat
 from pandas import read_excel
 
 my_sheet = 'Sheet1' # change it to your sheet name, you can find your sheet name at the bottom left of your excel file
-file_name = f'/Volumes/{catalog}.{schema}/raw/file_example_XLS_5000.xls' # change it to the name of your excel file
+file_name = f'/Volumes/{catalog}/{schema}/raw/file_example_XLS_5000.xls' # change it to the name of your excel file
 df_pandas = read_excel(file_name, sheet_name = my_sheet)
 
 # COMMAND ----------
@@ -164,8 +164,18 @@ df_spark.count()
 
 # COMMAND ----------
 
-df_bronze = df_spark.withColumnRenamed('Unnamed: 0', 'incremental_id')
+df_bronze = df_spark.withColumnRenamed('Unnamed: 0', 'incremental_id').withColumnRenamed('First name', 'first_name').withColumnRenamed('Last Name', 'last_name')
 
 # COMMAND ----------
 
 df_bronze.display()
+
+# COMMAND ----------
+
+df_bronze.write.mode('overwrite').saveAsTable(f'{catalog}.{schema}.example_excel')
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC
+# MAGIC SELECT * FROM eni_databricks_corsobase_dataanalysts.mattia_zeni.example_excel
